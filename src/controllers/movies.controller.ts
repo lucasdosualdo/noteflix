@@ -1,6 +1,9 @@
 import { connection } from "../connection/database.js";
 import { STATUS_CODE } from "../enums/status.code.js";
-import { getMovies } from "../repositories/movies.repository.js";
+import {
+  getMovies,
+  getSelectedMovie,
+} from "../repositories/movies.repository.js";
 
 async function postMovies(req, res) {
   const { movie, streamId, categoryId } = req.body;
@@ -18,10 +21,26 @@ async function postMovies(req, res) {
 async function listMovies(req, res) {
   try {
     const result = await getMovies();
+    if (result.rowCount === 0) {
+      return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    }
     res.status(STATUS_CODE.OK).send(result.rows);
   } catch (error) {
     return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
   }
 }
 
-export { postMovies, listMovies };
+async function selectMovie(req, res) {
+  const { movieId } = req.params;
+  try {
+    const result = await getSelectedMovie(movieId);
+    if (result.rowCount === 0) {
+      return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    }
+    res.status(STATUS_CODE.OK).send(result.rows[0]);
+  } catch (error) {
+    return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
+  }
+}
+
+export { postMovies, listMovies, selectMovie };
