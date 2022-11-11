@@ -1,18 +1,21 @@
-import { connection } from "../connection/database.js";
 import { STATUS_CODE } from "../enums/status.code.js";
 import {
   getMovies,
   getSelectedMovie,
+  getSearchedMovie,
+  verifyAddedMovies,
+  insertMovie,
 } from "../repositories/movies.repository.js";
 
-async function postMovies(req, res) {
-  const { movie, streamId, categoryId } = req.body;
+async function addMovie(req, res) {
+  const { userId, movieId } = req.body;
   try {
-    const insertMovie = await connection.query(
-      `INSERT INTO movies (movie, "streamId", "categoryId") VALUES ($1, $2, $3);`,
-      [movie, streamId, categoryId]
-    );
-    res.status(STATUS_CODE.CREATED).send("deu bommm");
+    const result = await verifyAddedMovies({ userId, movieId });
+    if (result.rowCount !== 0) {
+      return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
+    }
+    await insertMovie({ userId, movieId });
+    res.sendStatus(STATUS_CODE.OK);
   } catch (error) {
     return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
   }
@@ -43,4 +46,17 @@ async function selectMovie(req, res) {
   }
 }
 
-export { postMovies, listMovies, selectMovie };
+async function searchMovie(req, res) {
+  const { searchMovie } = req.params;
+  try {
+    const result = await getSearchedMovie(searchMovie);
+    if (result.rowCount === 0) {
+      return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    }
+    res.status(STATUS_CODE.OK).send(result.rows);
+  } catch (error) {
+    return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
+  }
+}
+
+export { addMovie, listMovies, selectMovie, searchMovie };

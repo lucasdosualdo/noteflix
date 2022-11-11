@@ -1,5 +1,21 @@
 import { connection } from "../connection/database.js";
 
+async function verifyAddedMovies({ userId, movieId }) {
+  return connection.query(
+    `
+  SELECT * FROM "moviesUsers" WHERE "userId" = $1 AND "movieId" = $2;
+    `,
+    [userId, movieId]
+  );
+}
+
+async function insertMovie({ userId, movieId }) {
+  return connection.query(
+    `INSERT INTO "moviesUsers" ("userId", "movieId") VALUES ($1, $2);`,
+    [userId, movieId]
+  );
+}
+
 async function getMovies() {
   return connection.query(`SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
     JOIN categories ON movies."categoryId" = categories.id
@@ -17,4 +33,22 @@ async function getSelectedMovie(movieId) {
   );
 }
 
-export { getMovies, getSelectedMovie };
+async function getSearchedMovie(searchMovie) {
+  return connection.query(
+    `
+    SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
+    JOIN categories ON movies."categoryId" = categories.id
+    JOIN streams ON movies."streamId" = streams.id
+    WHERE movies.movie ILIKE $1;
+    `,
+    [`${searchMovie}%`]
+  );
+}
+
+export {
+  getMovies,
+  getSelectedMovie,
+  getSearchedMovie,
+  verifyAddedMovies,
+  insertMovie,
+};
