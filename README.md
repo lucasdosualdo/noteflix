@@ -8,7 +8,10 @@ Noteflix is an web browser application that allows you to search and register th
 
 ## How to run
 
-1. Clone the repository above
+1. Clone the repository above: on git terminal, execute the code below in the local file you prefer
+```bash
+git clone https://github.com/lucasdosualdo/noteflix.git 
+```
 2. Install his dependencies
 ```bash
 npm install
