@@ -35,7 +35,9 @@ async function getMovies(): Promise<QueryResult<GeneralMovies>> {
     JOIN streams ON movies."streamId" = streams.id;`);
 }
 
-async function getMoviesByGender(category: string): Promise<QueryResult<GeneralMovies>> {
+async function getMoviesByGender(
+  category: string
+): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -45,7 +47,9 @@ async function getMoviesByGender(category: string): Promise<QueryResult<GeneralM
   );
 }
 
-async function getMoviesByStream(stream: string): Promise<QueryResult<GeneralMovies>> {
+async function getMoviesByStream(
+  stream: string
+): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -55,7 +59,9 @@ async function getMoviesByStream(stream: string): Promise<QueryResult<GeneralMov
   );
 }
 
-async function getSelectedMovie(movieId: number): Promise<QueryResult<GeneralMovies>> {
+async function getSelectedMovie(
+  movieId: number
+): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -66,7 +72,9 @@ async function getSelectedMovie(movieId: number): Promise<QueryResult<GeneralMov
   );
 }
 
-async function getSearchedMovie(searchMovie: string): Promise<QueryResult<GeneralMovies>> {
+async function getSearchedMovie(
+  searchMovie: string
+): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `
     SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
