@@ -1,12 +1,14 @@
 import { STATUS_CODE } from "../enums/status.code.js";
+import {Request, Response} from 'express';
 import {
   getMoviesByUser,
   verifyMovieStatus,
   setMoviesToUnwatched,
   setMoviesToWatched,
+  deleteMovie,
 } from "../repositories/users.repository.js";
 
-async function listMoviesByUser(req, res) {
+async function listMoviesByUser(req: Request, res: Response) {
   const { userId } = req.params;
   try {
     const result = await getMoviesByUser(userId);
@@ -19,7 +21,7 @@ async function listMoviesByUser(req, res) {
   }
 }
 
-async function updateMovies(req, res) {
+async function updateMovies(req: Request, res: Response) {
   const { userId } = req.params;
   const { movieId } = req.body;
   try {
@@ -39,4 +41,19 @@ async function updateMovies(req, res) {
   }
 }
 
-export { listMoviesByUser, updateMovies };
+async function deleteMovieFromUser(req: Request, res: Response) {
+  const { userId } = req.params;
+  const { movieId } = req.body;
+  try {
+    const result = await verifyMovieStatus({ userId, movieId });
+    if (result.rowCount === 0) {
+      return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    }
+    await deleteMovie({ userId, movieId });
+    res.sendStatus(STATUS_CODE.OK);
+  } catch (error) {
+    return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
+  }
+}
+
+export { listMoviesByUser, updateMovies, deleteMovieFromUser };

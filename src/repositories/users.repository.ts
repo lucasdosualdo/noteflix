@@ -1,4 +1,5 @@
 import { connection } from "../connection/database.js";
+import {QueryResult} from 'pg'; 
 
 async function getMoviesByUser(userId) {
   return connection.query(
@@ -40,9 +41,17 @@ async function setMoviesToWatched({ userId, movieId }) {
   );
 }
 
+async function deleteMovie({ userId, movieId }) {
+  return connection.query(
+    `DELETE FROM "moviesUsers" WHERE "userId" = $1 AND "movieId" = $2;`,
+    [userId, movieId]
+  );
+}
+
 export {
   getMoviesByUser,
   setMoviesToUnwatched,
   verifyMovieStatus,
   setMoviesToWatched,
+  deleteMovie
 };
