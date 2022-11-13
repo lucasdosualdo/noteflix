@@ -1,7 +1,16 @@
 import { connection } from "../connection/database.js";
-import {QueryResult} from 'pg'; 
+import { QueryResult } from "pg";
+import {
+  MovieController,
+  MovieEntity,
+  UserMovies,
+  GeneralMovies,
+} from "../protocols/types.js";
 
-async function verifyAddedMovies({ userId, movieId }) {
+async function verifyAddedMovies({
+  userId,
+  movieId,
+}: MovieController): Promise<QueryResult<UserMovies>> {
   return connection.query(
     `
   SELECT * FROM "moviesUsers" WHERE "userId" = $1 AND "movieId" = $2;
@@ -10,20 +19,23 @@ async function verifyAddedMovies({ userId, movieId }) {
   );
 }
 
-async function insertMovie({ userId, movieId }) {
+async function insertMovie({
+  userId,
+  movieId,
+}: MovieController): Promise<QueryResult<UserMovies>> {
   return connection.query(
     `INSERT INTO "moviesUsers" ("userId", "movieId") VALUES ($1, $2);`,
     [userId, movieId]
   );
 }
 
-async function getMovies() {
+async function getMovies(): Promise<QueryResult<GeneralMovies>> {
   return connection.query(`SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
     JOIN categories ON movies."categoryId" = categories.id
     JOIN streams ON movies."streamId" = streams.id;`);
 }
 
-async function getMoviesByGender(category) {
+async function getMoviesByGender(category: string): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -33,7 +45,7 @@ async function getMoviesByGender(category) {
   );
 }
 
-async function getMoviesByStream(stream) {
+async function getMoviesByStream(stream: string): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -43,7 +55,7 @@ async function getMoviesByStream(stream) {
   );
 }
 
-async function getSelectedMovie(movieId) {
+async function getSelectedMovie(movieId: number): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies
   JOIN categories ON movies."categoryId" = categories.id
@@ -54,7 +66,7 @@ async function getSelectedMovie(movieId) {
   );
 }
 
-async function getSearchedMovie(searchMovie) {
+async function getSearchedMovie(searchMovie: string): Promise<QueryResult<GeneralMovies>> {
   return connection.query(
     `
     SELECT movies.id, movies.movie, categories.category, streams.stream FROM movies

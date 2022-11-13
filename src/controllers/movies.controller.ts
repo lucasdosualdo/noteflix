@@ -1,6 +1,6 @@
 import { STATUS_CODE } from "../enums/status.code.js";
 import { Request, Response } from "express";
-import { MovieBody } from "../protocols/types.js";
+import { MovieController } from "../protocols/types.js";
 import {
   getMovies,
   getSelectedMovie,
@@ -12,13 +12,16 @@ import {
 } from "../repositories/movies.repository.js";
 
 async function addMovie(req: Request, res: Response) {
-  const { userId, movieId } = req.body as MovieBody;
+  const { userId, movieId } = req.body as MovieController;
   try {
-    const result = await verifyAddedMovies({ userId, movieId });
+    const result = await verifyAddedMovies({
+      userId,
+      movieId,
+    } as MovieController);
     if (result.rowCount !== 0) {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
-    await insertMovie({ userId, movieId });
+    await insertMovie({ userId, movieId } as MovieController);
     res.sendStatus(STATUS_CODE.OK);
   } catch (error) {
     return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
@@ -26,14 +29,17 @@ async function addMovie(req: Request, res: Response) {
 }
 
 async function addMovieByParams(req: Request, res: Response) {
-  const { userId } = req.body as MovieBody;
-  const { movieId } = req.params as unknown as MovieBody;
+  const { userId } = req.body as MovieController;
+  const { movieId } = req.params as unknown as MovieController;
   try {
-    const result = await verifyAddedMovies({ userId, movieId });
+    const result = await verifyAddedMovies({
+      userId,
+      movieId,
+    } as MovieController);
     if (result.rowCount !== 0) {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
-    await insertMovie({ userId, movieId });
+    await insertMovie({ userId, movieId } as MovieController);
     res.sendStatus(STATUS_CODE.OK);
   } catch (error) {
     return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
@@ -54,7 +60,7 @@ async function listMovies(req: Request, res: Response) {
 }
 
 async function listMoviesByGender(req: Request, res: Response) {
-  const { category } = req.params;
+  const { category } = req.params as unknown as MovieController;
   try {
     const result = await getMoviesByGender(category);
     if (result.rowCount === 0) {
@@ -67,7 +73,7 @@ async function listMoviesByGender(req: Request, res: Response) {
 }
 
 async function listMoviesByStream(req: Request, res: Response) {
-  const { stream } = req.params;
+  const { stream } = req.params as unknown as MovieController;
   try {
     const result = await getMoviesByStream(stream);
     if (result.rowCount === 0) {
@@ -80,7 +86,7 @@ async function listMoviesByStream(req: Request, res: Response) {
 }
 
 async function selectMovie(req: Request, res: Response) {
-  const { movieId } = req.params as unknown as MovieBody;
+  const { movieId } = req.params as unknown as MovieController;
   try {
     const result = await getSelectedMovie(movieId);
 
@@ -94,7 +100,7 @@ async function selectMovie(req: Request, res: Response) {
 }
 
 async function searchMovie(req: Request, res: Response) {
-  const { searchMovie } = req.params as unknown as MovieBody;
+  const { searchMovie } = req.params as unknown as MovieController;
   try {
     const result = await getSearchedMovie(searchMovie);
     if (result.rowCount === 0) {
