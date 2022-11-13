@@ -5,7 +5,7 @@ import {
   MovieEntity,
   UserMovies,
   GeneralMovies,
-} from "../protocols/types.js";
+} from "../protocols/movies.types.js";
 
 async function verifyAddedMovies({
   userId,

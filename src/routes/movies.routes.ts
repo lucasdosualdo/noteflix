@@ -8,6 +8,7 @@ import {
   listMoviesByGender,
   listMoviesByStream,
 } from "../controllers/movies.controller.js";
+import { MovieController } from "../protocols/movies.types.js";
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import { STATUS_CODE } from "../enums/status.code.js";
 import { Request, Response } from "express";
-import { MovieController } from "../protocols/types.js";
+import { MovieController } from "../protocols/movies.types.js";
 import {
   getMovies,
   getSelectedMovie,
@@ -37,12 +37,12 @@ async function addMovieByParams(req: Request, res: Response) {
       movieId,
     } as MovieController);
     if (result.rowCount !== 0) {
-      return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
+      return res.sendStatus(STATUS_CODE.UNAUTHORIZED) as Response;
     }
     await insertMovie({ userId, movieId } as MovieController);
-    res.sendStatus(STATUS_CODE.OK);
+    res.sendStatus(STATUS_CODE.OK) as Response;
   } catch (error) {
-    return res.status(STATUS_CODE.SERVER_ERROR).send(error.message);
+    return res.status(STATUS_CODE.SERVER_ERROR).send(error.message) as Response;
   }
 }
 
